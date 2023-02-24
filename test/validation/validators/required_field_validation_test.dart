@@ -1,31 +1,25 @@
-
 import 'package:curso_clean_solid/presentation/protocols/protocols.dart';
-import 'package:test/test.dart';
-
 import 'package:curso_clean_solid/validation/validators/validators.dart';
 
+import 'package:test/test.dart';
 
+void main() {
+  late RequiredFieldValidation sut;
 
-
-
-
-void main(){
-  RequiredFieldValidation? sut;
-
-
-  setUp((){
-    sut = RequiredFieldValidation(field: 'any_field');
+  setUp(() {
+    sut = RequiredFieldValidation('any_field');
   });
 
-  test('should return null is not empty', (){
-    expect(sut!.validation({'any_field' : 'any_value'}), null);
+  test('Should return null if value is not empty', () {
+    expect(sut.validate({'any_field': 'any_value'}), null);
   });
 
-  test('should return error if value is empty', (){
-    expect(sut!.validation({'any_field' : ''}), ValidationError.requiredField);
+  test('Should return error if value is empty', () {
+    expect(sut.validate({'any_field': ''}), ValidationError.requiredField);
   });
 
-  test('should return error if value is null', (){
-    expect(sut!.validation({'any_field' : null}), ValidationError.requiredField);
+  test('Should return error if value is null', () {
+    expect(sut.validate({}), ValidationError.requiredField);
+    expect(sut.validate({'any_field': null}), ValidationError.requiredField);
   });
 }

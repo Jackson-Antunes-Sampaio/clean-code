@@ -1,1 +1,1 @@
-export './http_adapater.dart';
+export './http_adapter.dart';

@@ -1,12 +1,12 @@
 import 'package:curso_clean_solid/domain/entities/entities.dart';
 
-
-
 import 'package:faker/faker.dart';
+
+import '../../../lib/domain/entities/entities.dart';
 
 class EntityFactory {
   static AccountEntity makeAccount() => AccountEntity(
-    faker.guid.guid()
+    token: faker.guid.guid()
   );
 
   static SurveyResultEntity makeSurveyResult() => SurveyResultEntity(

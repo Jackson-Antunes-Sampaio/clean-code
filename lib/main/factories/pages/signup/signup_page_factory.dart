@@ -1,11 +1,6 @@
-import 'package:flutter/material.dart';
-
 import '../../../../ui/pages/pages.dart';
 import '../../factories.dart';
 
+import 'package:flutter/material.dart';
 
-
-Widget makeSignUpPage(){
-
-  return SignUpPage(presenter: makeGetxSignupPresenter());
-}
+Widget makeSignUpPage() => SignUpPage(makeGetxSignUpPresenter());

@@ -1,5 +1,3 @@
-import 'package:curso_clean_solid/ui/pages/surveys/components/survey_item.dart';
-
 import '../surveys.dart';
 import './components.dart';
 
@@ -20,7 +18,7 @@ class SurveyItems extends StatelessWidget {
           enlargeCenterPage: true,
           aspectRatio: 1
         ),
-        items: viewModels.map<Widget>((viewModel) => SurveyItem(viewModel)).toList(),
+        items: viewModels.map((viewModel) => SurveyItem(viewModel)).toList(),
       ),
     );
   }

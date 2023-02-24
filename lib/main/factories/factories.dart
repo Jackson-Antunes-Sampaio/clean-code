@@ -1,6 +1,4 @@
-export 'http/http.dart';
-export 'usecases/usercases.dart';
-export 'pages/pages.dart';
-export 'cache/cache.dart';
-
-
+export './cache/cache.dart';
+export './http/http.dart';
+export './pages/pages.dart';
+export './usecases/usecases.dart';

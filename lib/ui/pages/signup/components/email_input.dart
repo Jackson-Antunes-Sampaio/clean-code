@@ -1,16 +1,10 @@
-import 'package:provider/provider.dart';
-import 'package:flutter/material.dart';
-
 import '../../../helpers/helpers.dart';
-import '../signup_presenter.dart';
+import '../signup.dart';
 
-
-
-
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class EmailInput extends StatelessWidget {
-  const EmailInput({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     final presenter = Provider.of<SignUpPresenter>(context);

@@ -1,77 +1,51 @@
-import 'dart:async';
-
 import 'package:curso_clean_solid/ui/pages/pages.dart';
-import 'package:flutter_test/flutter_test.dart';
+
+import '../helpers/helpers.dart';
+import '../mocks/mocks.dart';
+
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:mockito/mockito.dart';
-
-
-
-
-
-class SplashPresenterSpy extends Mock implements SplashPresenter {}
+import 'package:flutter_test/flutter_test.dart';
+import 'package:mocktail/mocktail.dart';
 
 void main() {
   late SplashPresenterSpy presenter;
-  late StreamController<String?> navigateToController;
 
   Future<void> loadPage(WidgetTester tester) async {
     presenter = SplashPresenterSpy();
-    navigateToController = StreamController<String?>();
-    when(presenter.navigateToStream)
-        .thenAnswer((realInvocation) => navigateToController.stream);
-    await tester.pumpWidget(GetMaterialApp(
-      initialRoute: '/',
-      getPages: [
-        GetPage(name: '/', page: () => SplashPage(presenter: presenter)),
-        GetPage(
-            name: '/any_route',
-            page: () => const Scaffold(
-                  body: Text('fake page'),
-                ))
-      ],
-    ));
+    await tester.pumpWidget(makePage(path: '/', page: () => SplashPage(presenter: presenter)));
   }
 
   tearDown(() {
-    navigateToController.close();
+    presenter.dispose();
   });
 
-  testWidgets('Should present spinner on page load',
-      (WidgetTester tester) async {
+  testWidgets('Should present spinner on page load', (WidgetTester tester) async {
     await loadPage(tester);
 
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
 
-  testWidgets('Should call loadCurrentAccount on page load',
-      (WidgetTester tester) async {
+  testWidgets('Should call loadCurrentAccount on page load', (WidgetTester tester) async {
     await loadPage(tester);
 
-    verify(presenter.checkAccount()).called(1);
+    verify(() => presenter.checkAccount()).called(1);
   });
 
-  testWidgets('Should load page ', (WidgetTester tester) async {
+  testWidgets('Should change page', (WidgetTester tester) async {
     await loadPage(tester);
-    navigateToController.add('/any_route');
+
+    presenter.emitNavigateTo('/any_route');
     await tester.pumpAndSettle();
-    expect(Get.currentRoute, '/any_route');
+
+    expect(currentRoute, '/any_route');
     expect(find.text('fake page'), findsOneWidget);
   });
 
-  testWidgets('Should change page ', (WidgetTester tester) async {
+  testWidgets('Should not change page', (WidgetTester tester) async {
     await loadPage(tester);
 
-    navigateToController.add('');
+    presenter.emitNavigateTo('');
     await tester.pump();
-    expect(Get.currentRoute, '/');
-
-    navigateToController.add(null);
-    await tester.pump();
-    expect(Get.currentRoute, '/');
-
-
-    expect(find.text('fake page'), findsOneWidget);
+    expect(currentRoute, '/');
   });
 }

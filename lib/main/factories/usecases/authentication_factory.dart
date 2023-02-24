@@ -1,14 +1,8 @@
 import '../../../data/usecases/usecases.dart';
-import '../../../domain/usercases/authentication.dart';
+import '../../../domain/usecases/usecases.dart';
 import '../factories.dart';
 
-
-Authentication makeRemoteAuthentication(){
-
-
-  return RemoteAuthentication(
-      httpClient: makeHttpAdapter(),
-      url: makeApiUrl('login'),
-  );
-
-}
+Authentication makeRemoteAuthentication() => RemoteAuthentication(
+  httpClient: makeHttpAdapter(),
+  url: makeApiUrl('login')
+);

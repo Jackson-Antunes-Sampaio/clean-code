@@ -1,76 +1,52 @@
+import '../../components/components.dart';
+import '../../helpers/helpers.dart';
+import '../../mixins/mixins.dart';
+import './components/components.dart';
+import './login.dart';
+
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
-import '../../../ui/helpers/helpers.dart';
-import '../../components/components.dart';
-import 'components/components.dart';
-import 'login_presenter.dart';
+class LoginPage extends StatelessWidget with KeyboardManager, LoadingManager, UIErrorManager, NavigationManager {
+  final LoginPresenter presenter;
 
-class LoginPage extends StatelessWidget {
-  const LoginPage({Key? key, required this.presenter}) : super(key: key);
-
-  final LoginPresenter? presenter;
-
+  LoginPage(this.presenter);
 
   @override
   Widget build(BuildContext context) {
-
-    void _hideKeyboard(){
-      final currectFocus = Focus.of(context);
-      if(!currectFocus.hasPrimaryFocus){
-        currectFocus.unfocus();
-      }
-    }
-
     return Scaffold(
       body: Builder(
         builder: (context) {
-          presenter?.isLoadingStream?.listen((isLoading) {
-            if (isLoading == true) {
-              showLoading(context);
-            } else {
-              hideLoading(context);
-            }
-          });
-          presenter?.mainErrorStream?.listen((error) {
-            if (error != null) {
-              showErrorMessage(context, error.description);
-            }
-          });
-          presenter?.navigateToStream?.listen((page) {
-            if (page?.isNotEmpty == true) {
-              Get.offAllNamed(page!);
-            }
-          });
+          handleLoading(context, presenter.isLoadingStream);
+          handleMainError(context, presenter.mainErrorStream);
+          handleNavigation(presenter.navigateToStream, clear: true);
+
           return GestureDetector(
-            onTap: _hideKeyboard ,
+            onTap: () => hideKeyboard(context),
             child: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const LoginHeader(),
-                  HeadLine1(text: R.string.login),
+                children: <Widget>[
+                  LoginHeader(),
+                  Headline1(text: R.string.login),
                   Padding(
-                    padding: const EdgeInsets.all(32),
-                    child: Form(
-                      child: Provider(
-                        create: (BuildContext context) {
-                          return presenter;
-                        },
+                    padding: EdgeInsets.all(32),
+                    child: ListenableProvider(
+                      create: (_) => presenter,
+                      child: Form(
                         child: Column(
-                          children: [
-                            const EmailInput(),
-                            const Padding(
+                          children: <Widget>[
+                            EmailInput(),
+                            Padding(
                               padding: EdgeInsets.only(top: 8, bottom: 32),
                               child: PasswordInput(),
                             ),
-                            const LoginButton(),
+                            LoginButton(),
                             TextButton.icon(
-                              onPressed: presenter?.goToSignUp,
-                              icon: const Icon(Icons.person),
-                              label: Text(R.string.addAccount),
-                            ),
+                              onPressed: presenter.goToSignUp,
+                              icon: Icon(Icons.person),
+                              label: Text(R.string.addAccount)
+                            )
                           ],
                         ),
                       ),
@@ -85,5 +61,3 @@ class LoginPage extends StatelessWidget {
     );
   }
 }
-
-

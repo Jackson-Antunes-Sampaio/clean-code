@@ -1,46 +1,11 @@
 import 'package:curso_clean_solid/data/http/http.dart';
 import 'package:curso_clean_solid/infra/http/http.dart';
+
+import '../mocks/mocks.dart';
+
 import 'package:faker/faker.dart';
-import 'package:http/http.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
-
-
-class ClientSpy extends Mock implements Client {
-  ClientSpy() {
-    this.mockPost(200);
-    this.mockPut(200);
-    this.mockGet(200);
-  }
-
-  When mockPostCall() =>
-      when(() =>
-          this.post(
-              any(), body: any(named: 'body'), headers: any(named: 'headers')));
-
-  void mockPost(int statusCode, {String body = '{"any_key":"any_value"}'}) =>
-      mockPostCall().thenAnswer((_) async => Response(body, statusCode));
-
-  void mockPostError() => when(() => mockPostCall().thenThrow(Exception()));
-
-  When mockPutCall() =>
-      when(() =>
-          this.put(
-              any(), body: any(named: 'body'), headers: any(named: 'headers')));
-
-  void mockPut(int statusCode, {String body = '{"any_key":"any_value"}'}) =>
-      mockPutCall().thenAnswer((_) async => Response(body, statusCode));
-
-  void mockPutError() => when(() => mockPutCall().thenThrow(Exception()));
-
-  When mockGetCall() =>
-      when(() => this.get(any(), headers: any(named: 'headers')));
-
-  void mockGet(int statusCode, {String body = '{"any_key":"any_value"}'}) =>
-      mockGetCall().thenAnswer((_) async => Response(body, statusCode));
-
-  void mockGetError() => when(() => mockGetCall().thenThrow(Exception()));
-}
 
 void main() {
   late HttpAdapter sut;
@@ -49,7 +14,7 @@ void main() {
 
   setUp(() {
     client = ClientSpy();
-    sut = HttpAdapter(client: client);
+    sut = HttpAdapter(client);
   });
 
   setUpAll(() {
@@ -69,34 +34,33 @@ void main() {
     test('Should call post with correct values', () async {
       await sut.request(url: url, method: 'post', body: {'any_key': 'any_value'});
       verify(() => client.post(
-          Uri.parse(url),
-          headers: {
-            'content-type': 'application/json',
-            'accept': 'application/json'
-          },
-          body: '{"any_key":"any_value"}'
+        Uri.parse(url),
+        headers: {
+          'content-type': 'application/json',
+          'accept': 'application/json'
+        },
+        body: '{"any_key":"any_value"}'
       ));
 
       await sut.request(url: url, method: 'post', body: {'any_key': 'any_value'}, headers: {'any_header': 'any_value'});
       verify(() => client.post(
-          Uri.parse(url),
-          headers: {
-            'content-type': 'application/json',
-            'accept': 'application/json',
-            'any_header': 'any_value'
-          },
-          body: '{"any_key":"any_value"}'
+        Uri.parse(url),
+        headers: {
+          'content-type': 'application/json',
+          'accept': 'application/json',
+          'any_header': 'any_value'
+        },
+        body: '{"any_key":"any_value"}'
       ));
     });
 
     test('Should call post without body', () async {
       await sut.request(url: url, method: 'post');
 
-      verify(() =>
-          client.post(
-              any(),
-              headers: any(named: 'headers')
-          ));
+      verify(() => client.post(
+        any(),
+        headers: any(named: 'headers')
+      ));
     });
 
     test('Should return data if post returns 200', () async {
@@ -190,21 +154,21 @@ void main() {
     test('Should call get with correct values', () async {
       await sut.request(url: url, method: 'get');
       verify(() => client.get(
-          Uri.parse(url),
-          headers: {
-            'content-type': 'application/json',
-            'accept': 'application/json'
-          }
+        Uri.parse(url),
+        headers: {
+          'content-type': 'application/json',
+          'accept': 'application/json'
+        }
       ));
 
       await sut.request(url: url, method: 'get', headers: {'any_header': 'any_value'});
       verify(() => client.get(
-          Uri.parse(url),
-          headers: {
-            'content-type': 'application/json',
-            'accept': 'application/json',
-            'any_header': 'any_value'
-          }
+        Uri.parse(url),
+        headers: {
+          'content-type': 'application/json',
+          'accept': 'application/json',
+          'any_header': 'any_value'
+        }
       ));
     });
 
@@ -293,8 +257,125 @@ void main() {
 
       expect(future, throwsA(HttpError.serverError));
     });
+  });
 
+  group('put', () {
+    test('Should call put with correct values', () async {
+      await sut.request(url: url, method: 'put', body: {'any_key': 'any_value'});
+      verify(() => client.put(
+        Uri.parse(url),
+        headers: {
+          'content-type': 'application/json',
+          'accept': 'application/json'
+        },
+        body: '{"any_key":"any_value"}'
+      ));
 
+      await sut.request(url: url, method: 'put', body: {'any_key': 'any_value'}, headers: {'any_header': 'any_value'});
+      verify(() => client.put(
+        Uri.parse(url),
+        headers: {
+          'content-type': 'application/json',
+          'accept': 'application/json',
+          'any_header': 'any_value'
+        },
+        body: '{"any_key":"any_value"}'
+      ));
+    });
 
+    test('Should call put without body', () async {
+      await sut.request(url: url, method: 'put');
+
+      verify(() => client.put(
+        any(),
+        headers: any(named: 'headers')
+      ));
+    });
+
+    test('Should return data if put returns 200', () async {
+      final response = await sut.request(url: url, method: 'put');
+
+      expect(response, {'any_key': 'any_value'});
+    });
+
+    test('Should return null if put returns 200 with no data', () async {
+      client.mockPut(200, body: '');
+
+      final response = await sut.request(url: url, method: 'put');
+
+      expect(response, null);
+    });
+
+    test('Should return null if put returns 204', () async {
+      client.mockPut(204, body: '');
+
+      final response = await sut.request(url: url, method: 'put');
+
+      expect(response, null);
+    });
+
+    test('Should return null if put returns 204 with data', () async {
+      client.mockPut(204);
+
+      final response = await sut.request(url: url, method: 'put');
+
+      expect(response, null);
+    });
+
+    test('Should return BadRequestError if put returns 400', () async {
+      client.mockPut(400, body: '');
+
+      final future = sut.request(url: url, method: 'put');
+
+      expect(future, throwsA(HttpError.badRequest));
+    });
+
+    test('Should return BadRequestError if put returns 400', () async {
+      client.mockPut(400);
+
+      final future = sut.request(url: url, method: 'put');
+
+      expect(future, throwsA(HttpError.badRequest));
+    });
+
+    test('Should return UnauthorizedError if put returns 401', () async {
+      client.mockPut(401);
+
+      final future = sut.request(url: url, method: 'put');
+
+      expect(future, throwsA(HttpError.unauthorized));
+    });
+
+    test('Should return ForbiddenError if put returns 403', () async {
+      client.mockPut(403);
+
+      final future = sut.request(url: url, method: 'put');
+
+      expect(future, throwsA(HttpError.forbidden));
+    });
+
+    test('Should return NotFoundError if put returns 404', () async {
+      client.mockPut(404);
+
+      final future = sut.request(url: url, method: 'put');
+
+      expect(future, throwsA(HttpError.notFound));
+    });
+
+    test('Should return ServerError if put returns 500', () async {
+      client.mockPut(500);
+
+      final future = sut.request(url: url, method: 'put');
+
+      expect(future, throwsA(HttpError.serverError));
+    });
+
+    test('Should return ServerError if put throws', () async {
+      client.mockPutError();
+
+      final future = sut.request(url: url, method: 'put');
+
+      expect(future, throwsA(HttpError.serverError));
+    });
   });
 }

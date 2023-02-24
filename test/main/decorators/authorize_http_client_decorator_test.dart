@@ -1,41 +1,12 @@
-import 'package:curso_clean_solid/data/cache/cache.dart';
 import 'package:curso_clean_solid/data/http/http.dart';
 import 'package:curso_clean_solid/main/decorators/decorators.dart';
+
+import '../../../lib/main/decorators/decorators.dart';
+import '../../data/mocks/mocks.dart';
 
 import 'package:faker/faker.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:test/test.dart';
-
-
-
-class SecureCacheStorageSpy extends Mock implements FetchSecureCacheStorage, DeleteSecureCacheStorage, SaveSecureCacheStorage {
-  SecureCacheStorageSpy() {
-    this.mockDelete();
-    this.mockSave();
-  }
-
-  When mockFetchCall() => when(() => this.fetch(any()));
-  void mockFetch(String? data) => this.mockFetchCall().thenAnswer((_) async => data);
-  void mockFetchError() => this.mockFetchCall().thenThrow(Exception());
-
-  When mockDeleteCall() => when(() => this.delete(any()));
-  void mockDelete() => this.mockDeleteCall().thenAnswer((_) async => _);
-  void mockDeleteError() => this.mockDeleteCall().thenThrow(Exception());
-
-  When mockSaveCall() => when(() => this.save(key: any(named: 'key'), value: any(named: 'value')));
-  void mockSave() => this.mockSaveCall().thenAnswer((_) async => _);
-  void mockSaveError() => this.mockSaveCall().thenThrow(Exception());
-}
-class HttpClientSpy extends Mock implements HttpClient {
-  When mockRequestCall() => when(() => request(
-      url: any(named: 'url'),
-      method: any(named: 'method'),
-      body: any(named: 'body'),
-      headers: any(named: 'headers')
-  ));
-  void mockRequest(dynamic data) => mockRequestCall().thenAnswer((_) async => data);
-  void mockRequestError(HttpError error) => mockRequestCall().thenThrow(error);
-}
 
 void main() {
   late AuthorizeHttpClientDecorator sut;

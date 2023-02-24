@@ -1,10 +1,6 @@
 import '../../data/cache/cache.dart';
 import '../../data/http/http.dart';
 
-abstract class DeleteSecureCacheStorage {
-  Future<void> delete(String key);
-}
-
 class AuthorizeHttpClientDecorator implements HttpClient {
   final FetchSecureCacheStorage fetchSecureCacheStorage;
   final DeleteSecureCacheStorage deleteSecureCacheStorage;

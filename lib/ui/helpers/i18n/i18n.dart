@@ -1,2 +1,1 @@
-export 'strings/strings.dart';
-export 'resources.dart';
+export './resources.dart';

@@ -41,14 +41,7 @@ dependencies:
   flutter_secure_storage: ^5.0.2
   carousel_slider: ^4.1.1
   intl: ^0.17.0
-
-
-
-
-  #testeMessage
-  firebase_core: ^1.15.0
-  firebase_messaging: ^11.2.14
-  flutter_local_notifications: ^9.4.1
+  localstorage: ^4.0.0+1
 
 
 dev_dependencies:
@@ -59,6 +52,7 @@ dev_dependencies:
   faker: ^2.0.0
   flutter_launcher_icons: ^0.9.2
   build_runner: ^2.1.11
+  network_image_mock: ^2.1.1
 
 
 

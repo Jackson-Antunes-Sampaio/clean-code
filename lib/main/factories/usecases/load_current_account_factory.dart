@@ -1,9 +1,7 @@
 import '../../../data/usecases/usecases.dart';
-import '../../../domain/usercases/usercases.dart';
+import '../../../domain/usecases/usecases.dart';
 import '../factories.dart';
 
-LoadCurrentAccount makeLocalLoadCurrentAccount(){
-  return LocalLoadCurrentAccount(
-   fetchSecureCacheStorage: makeLocalStorageAdapter()
-  );
-}
+LoadCurrentAccount makeLocalLoadCurrentAccount() => LocalLoadCurrentAccount(
+  fetchSecureCacheStorage: makeSecureStorageAdapter()
+);
